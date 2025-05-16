@@ -10,7 +10,7 @@
         "results": "results",
         "checkpoint": "checkpoint",
         // "resume_state": null
-        "resume_state": "/home/xinan/DiffusionProject/ShadowDiffusion-Event0924/experiments/deblur_EventFeature_demo3_240924_131707/checkpoint/I2730000_E5301" //pretrain model or training state
+        "resume_state": "" //pretrain model or training state
     },
     "datasets": {
         "train": {
@@ -31,9 +31,9 @@
     },
     "model": {
         "which_model_G": "sr3", // use the ddpm or sr3 network structure
-        "finetune_norm": true, //**********仅训练部分层
+        "finetune_norm": true, //
         "unet": {
-            "in_channel": 12, //with Event
+            "in_channel": 12, 
             "out_channel": 6,
             "inner_channel": 64,
             "norm_groups": 16,
@@ -46,7 +46,7 @@
                 // 16,
             ],
             "attn_res": [
-                8 //修改以向UNet中提供Attention
+                8 //
             ],
             "res_blocks": 2,
             "dropout": 0
@@ -66,7 +66,7 @@
             }
         },
         "diffusion": {
-            "image_size": 64,   //修改以向UNet中提供Attention
+            "image_size": 64,   //
             "channels": 6, //sample channel
             "conditional": true // unconditional generation or unconditional generation(super_resolution)
         }
