@@ -1,0 +1,92 @@
+{
+    "name": "deblur_EventFeature_demo3_jointfinetune_complete_lossNoise",
+    "phase": "val", // train or val
+    "gpu_ids": [
+       6
+    ],
+    "path": { //set the path
+        "log": "logs",
+        "tb_logger": "tb_logger",
+        "results": "results",
+        "checkpoint": "checkpoint",
+        // "resume_state": null
+        "resume_state": "/home/xinan/DiffusionProject/ShadowDiffusion-Event0924/experiments/deblur_EventFeature_demo3_240924_131707/checkpoint/I2730000_E5301" //pretrain model or training state
+    },
+    "datasets": {
+        "train": {
+            "name": "GoPro",
+            // "mode": "HR", // whether need LR img
+            // "datatype": "img", //lmdb or img, path of img files
+            // "l_resolution": "low", // low resolution need to super_resolution
+            // "r_resolution": "high", // high resolution
+            "batch_size": 4,
+            "num_workers": 1,
+            "use_shuffle": true,
+            "data_len": -1 // -1 represents all data used in train
+        },
+        "val": {
+            "name": "GoPro",
+            "data_len": -1
+        }
+    },
+    "model": {
+        "which_model_G": "sr3", // use the ddpm or sr3 network structure
+        "finetune_norm": true, //**********仅训练部分层
+        "unet": {
+            "in_channel": 12, //with Event
+            "out_channel": 6,
+            "inner_channel": 64,
+            "norm_groups": 16,
+            "channel_multiplier": [
+                1,
+                2,
+                4,
+                8
+                // 8,
+                // 16,
+            ],
+            "attn_res": [
+                8 //修改以向UNet中提供Attention
+            ],
+            "res_blocks": 2,
+            "dropout": 0
+        },
+        "beta_schedule": { // use munual beta_schedule for acceleration
+            "train": {
+                "schedule": "linear",
+                "n_timestep": 1000,
+                "linear_start": 1e-4,
+                "linear_end": 0.02
+            },
+            "val": {
+                "schedule": "linear",
+                "n_timestep": 1000,
+                "linear_start": 1e-4,
+                "linear_end": 0.02
+            }
+        },
+        "diffusion": {
+            "image_size": 64,   //修改以向UNet中提供Attention
+            "channels": 6, //sample channel
+            "conditional": true // unconditional generation or unconditional generation(super_resolution)
+        }
+    },
+    "train": {
+        "n_iter": 1e8,
+        "val_freq": 5000,
+        "save_checkpoint_freq": 10000,
+        "print_freq": 100,
+        "optimizer": {
+            "type": "adam",
+            "lr": 3e-05
+        },
+        "ema_scheduler": { // not used now
+            "step_start_ema": 5000,
+            "update_ema_every": 1,
+            "ema_decay": 0.9999
+        }
+    },
+    "wandb": {
+        "project": "distributed_high_sr_ffhq"
+    }
+}
